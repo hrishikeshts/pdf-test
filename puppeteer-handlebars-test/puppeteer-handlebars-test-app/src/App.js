@@ -66,13 +66,13 @@ function App() {
                     </button>
                 </div>
                 <div className='form-group'>
-                    <button
+                    {/* <button
                         type='submit'
                         className='btn btn-primary'
                         onClick={handleDownload}
                     >
                         View PDF from server
-                    </button>
+                    </button> */}
                 </div>
             </form>
         </>
