@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Axios from "axios";
 import "./App.css";
 
-export default function App() {
+function App() {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [link, setLink] = useState("");
@@ -78,3 +78,5 @@ export default function App() {
         </>
     );
 }
+
+export default App;
