@@ -23,23 +23,26 @@ app.use(bodyParser.json());
 
 const readFile = utils.promisify(fs.readFile);
 async function getTemplateHtml() {
-    console.log("Loading template file in memory");
+    console.log("Loading template file in memory...");
     try {
         const htmlPath = path.resolve("./index.html");
         return await readFile(htmlPath, "utf8");
     } catch (err) {
-        return Promise.reject("Could not load html template");
+        return Promise.reject("Could not load html template!");
     }
 }
 
 async function generatePdf(details) {
-    let data = {};
+    let data = {
+        name: details.name,
+        email: details.email,
+    };
     getTemplateHtml()
         .then(async (res) => {
             // Now we have the html code of our template in res object
             // you can check by logging it on console
             // console.log(res)
-            console.log("Compiing the template with handlebars");
+            console.log("Compiing the template with handlebars...");
             const template = hb.compile(res, { strict: true });
             // we have compile our code with handlebars
             const result = template(data);
@@ -52,7 +55,7 @@ async function generatePdf(details) {
             await page.setContent(html);
             // We use pdf function to generate the pdf in the same folder as this file.
             await page.pdf({
-                path: `PDF for ${details.name}.pdf`,
+                path: `PDFs/PDF for ${details.name}.pdf`,
                 format: "A4",
             });
             await browser.close();
@@ -63,8 +66,11 @@ async function generatePdf(details) {
         });
 }
 
+app.use("/", express.static(path.join(__dirname, "PDFs")));
+
 app.post("/generate-pdf", (req, res) => {
     generatePdf(req.body);
+    res.send(`http://localhost:${PORT}/PDF for ${req.body.name}.pdf`);
 });
 
 app.listen(PORT, () => {
