@@ -25,7 +25,7 @@ const readFile = utils.promisify(fs.readFile);
 async function getTemplateHtml() {
     console.log("Loading template file in memory...");
     try {
-        const htmlPath = path.resolve("./index.html");
+        const htmlPath = path.resolve("./invoice.html");
         return await readFile(htmlPath, "utf8");
     } catch (err) {
         return Promise.reject("Could not load html template!");
@@ -33,9 +33,17 @@ async function getTemplateHtml() {
 }
 
 async function generatePdf(details) {
+    let date_ob = new Date();
+    let total =
+        Number(details.itemA) + Number(details.itemB) + Number(details.itemC);
     let data = {
         name: details.name,
         email: details.email,
+        itemA: Number(details.itemA),
+        itemB: Number(details.itemB),
+        itemC: Number(details.itemC),
+        total: total,
+        date: date_ob,
     };
     getTemplateHtml()
         .then(async (res) => {
@@ -55,7 +63,7 @@ async function generatePdf(details) {
             await page.setContent(html);
             // We use pdf function to generate the pdf in the same folder as this file.
             await page.pdf({
-                path: `PDFs/PDF for ${details.name}.pdf`,
+                path: `PDFs/Invoice for ${details.name}.pdf`,
                 format: "A4",
             });
             await browser.close();
@@ -70,7 +78,7 @@ app.use("/", express.static(path.join(__dirname, "PDFs")));
 
 app.post("/generate-pdf", (req, res) => {
     generatePdf(req.body);
-    res.send(`http://localhost:${PORT}/PDF for ${req.body.name}.pdf`);
+    res.send(`http://localhost:${PORT}/Invoice for ${req.body.name}.pdf`);
 });
 
 app.listen(PORT, () => {
