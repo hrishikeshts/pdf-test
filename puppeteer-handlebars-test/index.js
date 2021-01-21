@@ -10,6 +10,8 @@ const hb = require("handlebars");
 const PORT = 4000;
 
 const app = express();
+
+// TODO: Why cors is enabled?
 app.use(
     Cors({
         origin: ["http://localhost:3000"],
@@ -19,6 +21,8 @@ app.use(
 );
 
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// TODO: Use express.json() instead?
 app.use(bodyParser.json());
 
 const readFile = utils.promisify(fs.readFile);
